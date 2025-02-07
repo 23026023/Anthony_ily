@@ -1,0 +1,35 @@
+name: Deploy static content to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # Deploys on push to the main branch
+  workflow_dispatch:  # Allows you to manually trigger the deployment
+
+permissions:
+  contents: read  # Read access to repository contents
+  pages: write  # Write access to deploy to GitHub Pages
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5  # Configures GitHub Pages to deploy
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'  # Specifies to deploy the entire repository
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
